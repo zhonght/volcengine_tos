@@ -1,5 +1,5 @@
 {
-    "name": "xm/huoshan-tos-storage",
+    "name": "sharexm/huoshan-tos-storage",
     "description": "火山引擎的对象存储filesystem storage for laravel 5+",
     "keywords": ["volcengine", "tos", "laravel", "filesystems", "storage"],
     "homepage": "https://github.com/zhonght/volcengine_tos",

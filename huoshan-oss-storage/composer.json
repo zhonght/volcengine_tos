@@ -1,0 +1,29 @@
+{
+    "name": "ykyun/huoshan-oss-storage",
+    "description": "火山引擎的对象存储filesystem storage for laravel 5+",
+    "keywords": ["volcengine", "tos", "laravel", "filesystems", "storage"],
+    "homepage": "https://github.com/zhonght/volcengine_tos",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "zhonght",
+            "email": "651799656@qq.com"
+        }
+    ],
+    "require": {
+        "volcengine/ve-tos-php-sdk": "^2.1",
+        "laravel/framework": "5.7.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ykyun\\VeTos\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Ykyun\\VeTos\\VeTosServiceProvider"
+            ]
+        }
+    }
+}

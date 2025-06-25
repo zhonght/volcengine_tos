@@ -1,37 +1,28 @@
 # Huoshan-oss-storage for Laravel 5+
 实现火山引擎的对象存储的TOS Storage扩展，打造Laravel最好的OSS Storage扩展
-## 安装依赖项
 
-- 必须先安装火山引擎的sdk，执行命令如下 composer require volcengine/ve-tos-php-sdk
-- 在项目根目录找个地方自定义创建文件夹名称，比如我是在项目根目录下面创建 lib/volcengine_tos 目录 执行添加子模块，您也可以不创建指定目录，通过git的相关工具来进行操作添加子模块同时自定义存放目录即可
-- 或者可以通过git命令执行加载子模块，doc命令指定到当前项目然后执行此命令:git submodule add 你克隆的git地址 所存放的项目路径(lib/volcengine_tos)
 
-## 注册providers
 
-在 `config/app.php` 将下面的代码添加到 providers 数组中进行注册:
-```php
- Ykyun\VeTos\VeTosServiceProvider::class
+# 环境要求
+
+- laravel的框架必须满足5.7版本以上
+- 引入火山引擎php版本的sdk 2.1版本以上
+
+
+
+# 安装
+
+
+
 ```
+执行以下命名进行安装加载依赖
 
-## 声明命名空间
-在 `composer.json` 进行映射命名空间，也就是你上面所添加的子模块的目录路径:
-```php
- 在 autoload 下的 psr-4 定义对应的命名空间
- "autoload": {
-        "psr-4": {
-            "App\\": "app/",
-            "Ykyun\\VeTos\\": "lib/volcengine_tos/huoshan-oss-storage/src"
-        },
-        "classmap": [
-            "database/seeds",
-            "database/factories"
-        ],
-        "files":[
-            "app/Helpers/function.php"
-        ]
-    }
+不指定版本
+composer require sharexm/huoshan-tos-storage
 
-  添加之后进行执行  composer dump-autoload 重新加载所定义的类
+需指定版本
+composer require sharexm/huoshan-tos-storage:^1.0
+
 ```
 
 

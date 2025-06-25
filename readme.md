@@ -20,8 +20,8 @@
 不指定版本
 composer require sharexm/huoshan-tos-storage
 
-需指定版本
-composer require sharexm/huoshan-tos-storage:^1.0
+可指定版本
+composer require sharexm/huoshan-tos-storage:"1.0.2"
 
 ```
 

@@ -733,10 +733,8 @@ class VeTosAdapter extends AbstractAdapter
     public function getUrl( $path )
     {
         //if (!$this->has($path)) throw new Exception($path.' not found');
-        //获取文件的真正上传路径
-        $path = $this->applyPathPrefix($path);
         //访问域名拼接文件的真正上传路径等于该文件的实际访问链接
-        return $this->cdnDomain.ltrim($path, '/') ;
+        return $this->cdnDomain.'/'.ltrim($path, '/') ;
     }
 
     /**

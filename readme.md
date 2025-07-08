@@ -29,7 +29,17 @@ composer require sharexm/huoshan-tos-storage:"1.0.2"
 
 ## 配置驱动
 
-1. 通过配置AccessKey和SecretKey来进行配置上传
+1. 通过配置AccessKey和SecretKey来进行上传
+
+2. 通过配置STS方式来进行上传
+
+   ```html
+   
+   注意:如果需要兼容以上两种方式进行切换上传的话，需要将以下所有的参数进行配置；若只需要一种方式的兼容则进行配置对应的相关参数即可     
+       
+   ```
+
+   
 
    在 app/filesystems.php 添加自定义的驱动:
 
@@ -53,14 +63,20 @@ composer require sharexm/huoshan-tos-storage:"1.0.2"
                'access_key_secret' => env('VOLCENGINE_SECRET_KEY', ''),
                // 火山引擎桶名称
                'bucket' => env('VOLCENGINE_BUCKET', ''),
-               // 外网节点或自定义外部域名
+               // 外网节点域名
                'endpoint' => env('VOLCENGINE_ENDPOINT', ''),
-               // 如果是true话就是使用这个自定义域名
+               // 火山引擎访问域名
                'cdnDomain'     => env('VOLCENGINE_CND_ENDPOINT', ''),
-               // 是否使用https来进行访问
-               'ssl'           => env('VOLCENGINE_SSL', false) ,
-               // isCName如果是false的话域名就是 bucket + endpoint ，如果是true话域名就是 cdnDomain
-               'isCName' =>  env('VOLCENGINE_ISCNAME', false),
+              
+                //火山引擎的上传模式方式
+               'volcengine_upload_way' => env('VOLCENGINE_UPLOAD_WAY', ''),
+               //火山引擎请求java接口地址
+               'volcengine_java_host_url' => env('VOLCENGINE_JAVA_HOST_URL', ''),
+               //火山引擎请求java应用appId
+               'volcengine_appid' => env('VOLCENGINE_APPID', ''),
+               //火山引擎请求java应用秘钥
+               'volcengine_appid_secret' => env('VOLCENGINE_APPID_SECRET', '')
+               
            ],
        	
      	...
@@ -75,73 +91,34 @@ composer require sharexm/huoshan-tos-storage:"1.0.2"
    VOLCENGINE_ACL_ACCESS_AUTHORITY="private"
    #是否需要打印出错误日志:true为需要 false为不需要
    VOLCENGINE_DEBUG_DEBUG=false
-   #火山引擎的AccessKey
+       
+   #火山引擎的AccessKey,明文key上传时为必填
    VOLCENGINE_ACCESS_KEY=
-   #火山引擎的SecretKey
+   #火山引擎的SecretKey,明文key上传时为必填
    VOLCENGINE_SECRET_KEY=
-   #桶名称
+   #桶名称,明文key上传时为必填
    VOLCENGINE_BUCKET=
-   #外网节点或自定义外部域名
+   #外网节点域名,明文key上传时为必填
    VOLCENGINE_ENDPOINT=
-   #火山引擎区域
+   #火山引擎访问域名,明文key上传时为必填
+   VOLCENGINE_CND_ENDPOINT=    
+   #火山引擎区域,明文key上传时为必填
    VOLCENGINE_REGION=
-   #是否使用自定义域名
-   VOLCENGINE_ISCNAME=
-   #如果isCName为true采用此自定义域名
-   VOLCENGINE_CND_ENDPOINT=
-   #是否使用https来进行访问
-   VOLCENGINE_SSL=
+   
+   #火山引擎的上传模式方式,TOS_STS表示用STS创建传入临时登录token进行验证上传
+   VOLCENGINE_UPLOAD_WAY="TOS_STS"
+   #火山引擎请求java接口地址,TOS_STS上传时为必填
+   VOLCENGINE_JAVA_HOST_URL=""
+   #火山引擎请求java应用appId,TOS_STS上传时为必填
+   VOLCENGINE_APPID=""
+   #火山引擎请求java应用秘钥,TOS_STS上传时为必填
+   VOLCENGINE_APPID_SECRET=""
+       
    
    
    ```
 
-2. 通过配置STS方式来进行上传
-
-```php
-'disks'=>[
-    ...
-        //火山引擎的对象存储
-        'volcengine' => [
-            'driver' => 'volcengine',
-            //访问权限
-            'acl_access_authority' =>  env('VOLCENGINE_ACL_ACCESS_AUTHORITY', ''),
-            //是否需要打印出错误日志
-            'debug' => env('VOLCENGINE_DEBUG_DEBUG', false),
-             //火山引擎的上传模式方式
-            'volcengine_upload_way' => env('VOLCENGINE_UPLOAD_WAY', ''),
-            //火山引擎请求java接口地址
-            'volcengine_java_host_url' => env('VOLCENGINE_JAVA_HOST_URL', ''),
-            //火山引擎请求java应用appId
-            'volcengine_appid' => env('VOLCENGINE_APPID', ''),
-            //火山引擎请求java应用秘钥
-            'volcengine_appid_secret' => env('VOLCENGINE_APPID_SECRET', '')
-        ],
-    ...
-]
-
     
-.env的对应的配置
-    
-#火山引擎的对象存储
-FILESYSTEM_DRIVER=volcengine
-#访问权限  private=私有  public-read=公共读  public-read-write=公共读写
-VOLCENGINE_ACL_ACCESS_AUTHORITY="private"
-#是否需要打印出错误日志:true为需要 false为不需要
-VOLCENGINE_DEBUG_DEBUG=false
-#火山引擎的上传模式方式,默认是明文key去进行上传，TOS_STS表示用STS创建传入临时登录token进行验证上传
-VOLCENGINE_UPLOAD_WAY="TOS_STS"
-#火山引擎请求java接口地址
-VOLCENGINE_JAVA_HOST_URL=""
-#火山引擎请求java应用appId,TOS_STS上传模式需要必配此参数
-VOLCENGINE_APPID=""
-#火山引擎请求java应用秘钥,TOS_STS上传模式需要必配此参数
-VOLCENGINE_APPID_SECRET=""
-    
-    
-需要注意的是通过TOS_STS的方式来上传的话，是需要通过调用java提供的接口和相关参数进行验签后返回第1种上传方式的相关配置数据和临时登录token来初始化火山引擎TOS的连接对象  
-    
-```
-
 
 在 app/filesystems.php 设置默认的火山引擎驱动:
 

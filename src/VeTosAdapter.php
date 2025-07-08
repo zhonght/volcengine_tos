@@ -145,11 +145,9 @@ class VeTosAdapter extends AbstractAdapter
         TosClient $client,
         string    $bucket,
         string    $endPoint,
-        bool      $ssl,
         string    $cdnDomain,
         string    $aclAccessAuthority,
         string    $uploadWay = "",
-        bool      $isCname = false,
         bool      $debug = false,
         string    $prefix = null,
         array     $options = []
@@ -161,10 +159,6 @@ class VeTosAdapter extends AbstractAdapter
         $this->client = $client;
         //获取图片的真正访问路径(包含所指定的路径前缀即必须上传到指定的父目录)
         $this->setPathPrefix($prefix);
-        //获取是否用https访问
-        $this->ssl = $ssl;
-        //获取是否自定义域名
-        $this->isCname = $isCname;
 
         //不自定义域名就是 桶名称.外网节点
         //获取桶名称
@@ -739,16 +733,10 @@ class VeTosAdapter extends AbstractAdapter
     public function getUrl( $path )
     {
         //if (!$this->has($path)) throw new Exception($path.' not found');
-        if($this->uploadWay == self::UPLOAD_WAY_STS){
-            //通过STS模式进行上传图片时需要拼接java接口所返回的路径前缀
-            $path = $this->applyPathPrefix($path);
-            //路径前缀为空，因为直接获取的是java接口所返回的访问域名
-            $urlPre = "" ;
-        }else{
-            //是否开启https
-            $urlPre = $this->ssl ? 'https://' : 'http://' ;
-        }
-        return $urlPre . ( $this->isCname ? ( $this->cdnDomain == '' ? $this->endPoint : $this->cdnDomain ) : $this->bucket . '.' . $this->endPoint ) . '/' . ltrim($path, '/');
+        //获取文件的真正上传路径
+        $path = $this->applyPathPrefix($path);
+        //访问域名拼接文件的真正上传路径等于该文件的实际访问链接
+        return $this->cdnDomain.ltrim($path, '/') ;
     }
 
     /**

@@ -125,10 +125,6 @@ class VeTosServiceProvider extends ServiceProvider
                 //TOS的访问域名
                 $cdnDomain = $resultInfo['domain'] ?? "" ;
                 $cdnDomain = trim($cdnDomain,"/");
-                //如果访问域名不为空就是要自定义这个域名访问图片
-                $isCname = empty($cdnDomain) ? false : true;
-                //其实这个变量在适配器是没有用的，因为我们直接获取接口访问的域名进行拼接
-                $ssl = false ;
 
                 //token过期时间（毫秒时间戳）
                 $expireTime = $resultInfo['expireTime'] ?? 0 ;
@@ -141,17 +137,19 @@ class VeTosServiceProvider extends ServiceProvider
                 if($cacheSeconds > 0){
                     //设置缓存60秒
                     Cache::put($redisKey, $resultInfo, $cacheSeconds);
+                }else{
+                    //删除缓存
+                    Cache::forget($redisKey);
                 }
             }else{
 
-                //是否使用https来进行访问
-                $ssl       = empty($config['ssl']) ? false : $config['ssl'];
+
                 //外网节点或自定义外部域名
                 $endPoint  = $config['endpoint'] ?? '';
                 //桶名称
                 $bucket    = $config['bucket'] ?? '';
                 $cdnDomain = empty($config['cdnDomain']) ? '' : $config['cdnDomain'];
-                $isCname   = empty($config['isCName']) ? false : $config['isCName'];
+
                 $client  = new TosClient([
                     //火山引擎区域
                     'region' => $config['region'] ?? '',
@@ -168,11 +166,9 @@ class VeTosServiceProvider extends ServiceProvider
                 $client,
                 $bucket,
                 $endPoint,
-                $ssl,
                 $cdnDomain,
                 $aclAccessAuthority,
                 $uploadWay,
-                $isCname,
                 $debug,
                 $pathTemplate
             );

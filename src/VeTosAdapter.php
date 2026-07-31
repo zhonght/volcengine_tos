@@ -734,7 +734,9 @@ class VeTosAdapter extends AbstractAdapter
     {
         //if (!$this->has($path)) throw new Exception($path.' not found');
         //访问域名拼接文件的真正上传路径等于该文件的实际访问链接
-        return $this->cdnDomain.'/'.ltrim($path, '/') ;
+        //getPathPrefix() 返回 Java STS 接口下发的 pathTemplate（去除 {business} 变量后），
+        //上传时 applyPathPrefix 已将其拼入实际 TOS 对象 key，因此生成 URL 也必须带上，否则 URL 与实际存储路径不一致
+        return $this->cdnDomain.'/'.ltrim($this->getPathPrefix() . $path, '/') ;
     }
 
     /**
